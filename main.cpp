@@ -46,6 +46,35 @@ public:
         return m_matrix[i][j];
     }
 
+     const T& operator()(unsigned int i, unsigned int j) const
+    {
+        return m_matrix[i][j];
+    }
+
+     Matrix& operator+=(const Matrix& other)
+     {
+         for (int i = 0; i < N; i++)
+             for (int j = 0; j < M; j++)
+                 (*this).m_matrix[i][j] += other.m_matrix[i][j];
+         return *this;
+     }
+
+     Matrix& operator+(const Matrix& other)
+     {
+         Matrix temp = *this;
+         temp += other;
+         return temp;
+     }
+
+     template<typename U, typename V>
+     U& operator*=(const V& other)
+     {
+         if ((*this).get_row_size() == other.get_column_size() && (*this).get_column_size() == other.get_row_size())
+         {
+             ...
+         }
+     }
+
     T determinant()
     {
         if (N == 2 && M == 2)
@@ -59,19 +88,26 @@ public:
                 det += m_matrix[1][i] * m_matrix[2][(i+1) % 3] * m_matrix[3][(i+2) % 3] - m_matrix[1][i] * m_matrix[2][(i+2) % 3] * m_matrix[3][(i+1) % 3];
             return det;
         }
-        else if (N == M)
+        else if (N != M)
+        {
+            std::cout << "Determinant for this matrix does not exist!!!" << std::endl;
+            return -1;
+        }
     }
 
-    friend std::ostream& operator<<(std::ostream& out, const Matrix& mtr);
-    friend std::istream& operator>>(std::istream& in, const Matrix& mtr);
+    template<typename T, unsigned int N, unsigned int M>
+    friend std::ostream& operator<<(std::ostream& out, const Matrix<T, N, M>& mtr);
+
+    template<typename T, unsigned int N, unsigned int M>
+    friend std::istream& operator>>(std::istream& in, Matrix<T, N, M>& mtr);
 };
 
 template<typename T, unsigned int N, unsigned int M>
 std::ostream& operator<<(std::ostream& out, const Matrix<T, N, M>& mtr)
 {
-    for (int i = 0; i < mtr.get_column_size(); i++)
+    for (int i = 0; i < N; i++)
     {
-        for (int j = 0; j < mtr.get_row_size(); j++)
+        for (int j = 0; j < M; j++)
             out << mtr(i, j) << " ";
         out << std::endl;
     }
@@ -79,17 +115,17 @@ std::ostream& operator<<(std::ostream& out, const Matrix<T, N, M>& mtr)
 }
 
 template<typename T, unsigned int N, unsigned int M>
-std::istream& operator>>(std::istream& in, const Matrix<T, N, M>& mtr)
+std::istream& operator>>(std::istream& in, Matrix<T, N, M>& mtr)
 {
-    for (int i = 0; i < mtr.get_column_size(); i++)
+    for (int i = 0; i < N; i++)
     {
-        for (int j = 0; j < mtr.get_row_size(); j++)
+        for (int j = 0; j < M; j++)
             in >> mtr(i, j);
     }
     return in;
 }
 
-
+using Matrix33i = Matrix<int, 3, 3>;
 using Matrix22i = Matrix<int, 2, 2>;
 using Vector2i = Matrix<int, 2, 1>;
 
@@ -98,6 +134,8 @@ int main() {
 
     std::cin >> mrx;
     std::cout << mrx;
+
+    std::cout << mrx.determinant() << std::endl;
 
     std::cout << "Hello, World!" << std::endl;
     return 0;
