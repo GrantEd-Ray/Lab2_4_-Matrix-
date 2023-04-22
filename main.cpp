@@ -80,7 +80,22 @@ public:
          for (int i = 0; i < N; i++)
              for (int j = 0; j < M; j++)
                  (*this).m_matrix[i][j] += 1;
-         return temp
+         return temp;
+     }
+
+     Matrix& operator*=(double a)
+     {
+         for (int i = 0; i < N; i++)
+             for (int j = 0; j < M; j++)
+                 (*this).m_matrix[i][j] *= a;
+         return *this;
+     }
+
+     Matrix operator*(double a)
+     {
+         Matrix<T, N, M> temp = *this;
+         temp *= a;
+         return temp;
      }
 
      template<unsigned int N2, unsigned int M2>
