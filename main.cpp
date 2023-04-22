@@ -51,6 +51,14 @@ public:
         return m_matrix[i][j];
     }
 
+     Matrix& operator=(Matrix<T, N, M> other)
+     {
+         for (int i = 0; i < N; i++)
+             for (int j = 0; j < M; j++)
+                 (*this).m_matrix[i][j] = other.m_matrix[i][j];
+         return *this;
+     }
+
      Matrix& operator+=(const Matrix& other)
      {
          for (int i = 0; i < N; i++)
@@ -59,7 +67,7 @@ public:
          return *this;
      }
 
-     Matrix& operator+(const Matrix& other)
+     Matrix operator+(const Matrix& other)
      {
          Matrix temp = *this;
          temp += other;
@@ -74,7 +82,7 @@ public:
          return *this;
      }
 
-     Matrix& operator++(int)
+     Matrix operator++(int)
      {
          Matrix<T, N, M> temp = *this;
          for (int i = 0; i < N; i++)
@@ -99,7 +107,7 @@ public:
      }
 
      template<unsigned int N2, unsigned int M2>
-     Matrix<T, N, M2>& operator*(const Matrix<T, N2, M2>& matrix2)
+     Matrix<T, N, M2> operator*(const Matrix<T, N2, M2>& matrix2)
      {
          Matrix<T, N, M2> X;
          if (M == N2)
@@ -175,11 +183,14 @@ int main() {
     std::cin >> mrx;
     std::cout << mrx;
 
+    Matrix22i m3 = mrx;
+
     std::cin >> m2;
+    m2++;
     std::cout << m2;
     std::cout << std::endl;
 
-    //mrx *= m2;
+
     Matrix<int, 2, 3> res;
     res = mrx * m2;
     std::cout << res;
