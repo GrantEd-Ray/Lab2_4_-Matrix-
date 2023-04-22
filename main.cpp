@@ -66,12 +66,36 @@ public:
          return temp;
      }
 
-     template<typename U, typename V>
-     U& operator*=(const V& other)
+     Matrix& operator++()
      {
-         if ((*this).get_row_size() == other.get_column_size() && (*this).get_column_size() == other.get_row_size())
+         for (int i = 0; i < N; i++)
+             for (int j = 0; j < M; j++)
+                 (*this).m_matrix[i][j] += 1;
+         return *this;
+     }
+
+     Matrix& operator++(int)
+     {
+         Matrix<T, N, M> temp = *this;
+         for (int i = 0; i < N; i++)
+             for (int j = 0; j < M; j++)
+                 (*this).m_matrix[i][j] += 1;
+         return temp
+     }
+
+     template<unsigned int N2, unsigned int M2>
+     Matrix<T, N, M2>& operator*(const Matrix<T, N2, M2>& matrix2)
+     {
+         Matrix<T, N, M2> X;
+         if (M == N2)
          {
-             ...
+             for (int i = 0; i < N; i++)
+                 for (int j = 0; j < M2; j++)
+                     for (int k = 0; k < N2; k++)
+                     {
+                         X(i, j) += (*this)(i, k) * matrix2(k, j);
+                     }
+             return X;
          }
      }
 
@@ -131,12 +155,21 @@ using Vector2i = Matrix<int, 2, 1>;
 
 int main() {
     Matrix22i mrx;
+    Matrix<int, 2, 3> m2;
 
     std::cin >> mrx;
     std::cout << mrx;
 
+    std::cin >> m2;
+    std::cout << m2;
+    std::cout << std::endl;
+
+    //mrx *= m2;
+    Matrix<int, 2, 3> res;
+    res = mrx * m2;
+    std::cout << res;
+
     std::cout << mrx.determinant() << std::endl;
 
-    std::cout << "Hello, World!" << std::endl;
     return 0;
 }
